@@ -13,6 +13,7 @@ import ActivityGlobal from "../components/ResourcesComponent/ResourcesViewGlobal
 import ActivitySequential from "../components/ResourcesComponent/ResourcesViewSequential.vue";
 import diagnosisStateEvaluation from "../components/diagnosisStateEvaluation.vue";
 import ActivityITS from "../components/ActivityITS.vue";
+import AcercaDe from "../components/acercaDe.vue"
 
 Vue.use(VueRouter);
 
@@ -73,6 +74,12 @@ const routes = [
     path: "/ActivityITS",
     name: "ActivityITS",
     component: ActivityITS,
+    // meta: { requiresAuth: true }
+  },
+  {
+    path: "/AcercaDe",
+    name: "AcercaDe",
+    component: AcercaDe,
     // meta: { requiresAuth: true }
   }
 ];

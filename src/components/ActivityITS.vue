@@ -12,6 +12,7 @@
         <b-dropdown-item v-if="nav_menu == 'Secuencial' && Object.keys(additionalResource_2).length > 0">
           <a class="nav-link" :class="{ 'active': activeTab === 'RAS_2'  }" @click="changeTab('RAS_2')" >Activity2</a>        
         </b-dropdown-item>
+        
     </b-dropdown>
 
     <b-dropdown id="dropdown-left" text="Activities" variant="primary" class="m-2" v-if="nav_menu === 'Global'">
@@ -30,6 +31,13 @@
         </li>
         <li class="nav-item">
           <a class="nav-link" :class="{ 'active': activeTab === 'ProfileTab' }" @click="changeTab('ProfileTab')">Profile</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" :class="{ 'active': activeTab === 'AcercaTab' }" @click="changeTab('AcercaTab')">Acerca de</a>
+        </li>
+        <v-spacer></v-spacer>
+        <li class="nav-item">
+          <a class="nav-link" @click="abrirModal()" ><span class="mdi mdi-exit-to-app"></span></a>
         </li>
       </ul>
       <div id="ActivitySequential" v-show="activeTab === 'sequentialTab'">
@@ -56,6 +64,17 @@
       <div id="profile" v-show="activeTab === 'ProfileTab'">
         <Profile v-if="activeTab === 'ProfileTab'" />
       </div>
+      <div id="profile" v-show="activeTab === 'AcercaTab'">
+        <AcercaDe v-if="activeTab === 'AcercaTab'" />
+      </div>
+      <div v-if="modalClose" class="modal">
+  <div class="modal-content">
+    <p>Deseas cerrar sesión?</p>
+    <button @click="closeModal">Cancelar</button>
+    <button @click="logout">Cerrar Sesión</button>
+  </div>
+</div>
+
     </div>
   </template>
   
@@ -69,6 +88,8 @@
   import ResourceAdditionalG_1 from './ResourcesComponent/AdditionalResources/AdditionalRglobal/additionalResourceG_1.vue'
   import ResourceAdditionalG_2 from './ResourcesComponent/AdditionalResources/AdditionalRglobal/additionalResourceG_2.vue'
   import DiagnosisStateEvaluation from './diagnosisStateEvaluation.vue';
+  import AcercaDe from "./acercaDe.vue"
+
   import axios from 'axios';
 
   /*import { BPopover } from 'bootstrap-vue';
@@ -83,7 +104,8 @@
       ResourceAdditionalG_2,
       ResourceAdditionalS_1,
       ResourceAdditionalS_2,
-      Profile
+      Profile,
+      AcercaDe
       /**/
     },
     data() {
@@ -93,7 +115,8 @@
         additionalResource_1: [],
         additionalResource_2: [],
         isProfileSidebarOpen: false,
-        showProfile: false
+        showProfile: false,
+        modalClose: false
 
       };
     },
@@ -117,6 +140,17 @@
       },
       toggleProfileSidebar() {
       this.isProfileSidebarOpen = !this.isProfileSidebarOpen;
+    },
+    abrirModal() {
+      this.modalClose = true
+    },
+    closeModal() {
+      this.modalClose = false
+    },
+    logout() {
+      localStorage.removeItem('userId');
+      this.$router.push('/')
+
     }
     },
   };
@@ -170,5 +204,48 @@
     z-index: 1000;
   }
 }
+
+.modal {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5); /* Fondo oscuro semi-transparente */
+  }
+
+  .modal-content {
+    background-color: #fff; /* Fondo blanco del modal */
+    padding: 20px;
+    border-radius: 8px;
+    text-align: center;
+    width: 50%;
+
+  }
+
+  .modal p {
+    margin-bottom: 20px;
+  }
+
+  .modal button {
+    padding: 10px 20px;
+    margin: 0 10px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+  }
+
+  .modal button:nth-child(2) {
+    background-color: #dc3545; /* Rojo para el botón de Cerrar Sesión */
+    color: #fff; /* Texto blanco */
+  }
+
+  .modal button:nth-child(3) {
+    background-color: #007bff; /* Azul para el botón de Cancelar */
+    color: #fff; /* Texto blanco */
+  }
   </style>
   

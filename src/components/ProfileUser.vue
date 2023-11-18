@@ -1,121 +1,165 @@
-<template>
-  <div class="profile">
-    <table class="profile-table">
-      <tr>
-        <td class="profile-picture-cell" rowspan="4">
-          <img :src="user.picture" alt="Foto de perfil" class="round-image" />
-        </td>
-        <td  class="title">Nombre Completo:</td>
-        <td>{{ user.name }}</td>
-      </tr>
-      <tr>
-        <td  class="title">ID de Usuario:</td>
-        <td>{{ user.Id }}</td>
-      </tr>
-      <tr>
-        <td  class="title">Nombre de Usuario:</td>
-        <td>{{ user.users }}</td>
-      </tr>
-      <tr>
-        <td class="title">Estilo de aprendizaje:</td>
-        <td>{{ user.Ls }}</td>
-      </tr>
-    </table>
+<!-- Use preprocessors via the lang attribute! e.g. <template lang="pug"> -->
+  <template>
+    <b-container fluid>
+      <b-row>
+        <b-col offset-md="2">
+          <h1>Profile</h1>
+          <hr class="my-4" />
+        </b-col>
+      </b-row>
+      <b-row align-h="center">
+        <b-col cols="6" md="2" class="my-4">
+          <b-img-lazy
+            thumbnail
+            rounded="circle"
+            :src="user.picture"
+            alt="Image 1"
+          >
+          </b-img-lazy>
+        </b-col>
+  
+        <b-col cols="12" md="10">
+          <b-tabs content-class="mt-3" card id="app">
+            <b-tab title="Info" active>
+              <b-list-group>
+                <b-list-group-item>
+                  <span class="p-1 mr-3"> <b-avatar icon="Id user" /></span>
+                  {{ user.Id }}
+                </b-list-group-item>
+                <b-list-group-item>
+                  <span class="p-1 mr-3"> <b-avatar icon="Name" /></span>
+                  {{ user.name }}
+                </b-list-group-item>
+                <b-list-group-item>
+                  <span class="p-1 mr-3"> <b-avatar icon="Username" /></span>
+                  {{ user.users }}
+                </b-list-group-item>
+              </b-list-group>
+              <br />
+            </b-tab>
+            <b-tab title="Learning path" @click="capturePath">
+              <b-list-group>
+                <b-list-group-item>
+                  <div>
+                    <b-table
+      :items="combinedData"
+      :fields="fields"
+      :tbody-tr-class="tableRowClass"
+      class="mt-3"
+    ></b-table>
+                  </div>
+                </b-list-group-item>
+              </b-list-group>
+            </b-tab>
+            <b-tab title="Learning style" lazy @click="captureStyle">
+              <b-list-group>
+                <b-list-group-item> <b-table
+              :items="styleList"
+              :fields="fieldStyle"
+              class="mt-3"
+    ></b-table></b-list-group-item>
+              </b-list-group>
+            </b-tab>
+          </b-tabs>
+        </b-col>
+      </b-row>
+    </b-container>
+  </template>
+  
+  <script>
+  import axios from 'axios';
+  export default {
 
-    <!-- Botones para abrir modales -->
-    <div class="button-container">
-      <b-button @click="openModal('TestTopic')">Abrir Test Topic</b-button>
-      <b-button @click="openModal('TestStyle')">Abrir Test Style</b-button>
-    </div>
+    data() {
+      return {
+        user: {},
+        styleList: [],
+        recommendPath: [],
 
-    <!-- Modales -->
-    <b-modal v-if="modalType === 'TestTopic'" title="Test Topic">
-      Contenido del modal para Test Topic
-    </b-modal>
-    <b-modal v-if="modalType === 'TestStyle'" title="Test Style">
-      Contenido del modal para Test Style
-    </b-modal>
-  </div>
-</template>
-<script>
 
-import axios from 'axios';
-
-export default {
-  data() {
-    return {
-      user: {},
-      modalType: null
-    };
-  },
-
-  mounted() {
-    this.dataUser()
-  },
-
-  methods: {
-    async dataUser() {
-      const id_student = this.$store.state.userId
-    try {
-      const response = await axios.get(`/api/dataUser/${id_student}`);
-      this.user = response.data;
-      console.log(this.user)
-    } catch (error) {
-      console.error(error);
-    }
+      };
     },
-    openModal(type) {
-      this.modalType = type;
+
+    computed: {
+combinedData() {
+      const combined = [...this.recommendPath];
+      return combined.map(item => {
+        return {
+          name: item.name || item,
+          goal: item.goal || '',
+          lvl: item.lvl || ''
+        };
+      });
+},
+
+
+fields() {
+      return [
+        { key: 'name', label: 'Name' },
+        { key: 'goal', label: 'Goal' },
+        { key: 'lvl', label: 'Level' }
+      ];
+    },
+fieldStyle() {
+      return [
+        { key: 'dominant_style', label: 'Dominant style' },
+        { key: 'style', label: 'Style' },
+      ];
     }
-  }
-};
-</script>
-
-<style scoped>
-.profile {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
-
-.title {
- font-weight: bold;
- background-color: rgb(223, 223, 223);
-}
-.profile-table {
-  border-collapse: collapse;
-  width: 80%;
-  margin: 20px;
-}
-
-.profile-table td {
-  padding: 8px;
-  border: 1px solid #ccc;
-}
-
-
-.profile-picture-cell {
-  width: 300px; /* Ajusta el ancho de la celda de la imagen según tus preferencias */
-}
-
-.profile-picture {
-  margin-bottom: 1rem;
-}
-
-.round-image {
-  width: 100%;
-}
-
-.profile-info {
-  margin-bottom: 1rem;
-}
-
-.button-container {
-  display: flex;
-  justify-content: center;
-}
-
-.b-button {
-  margin: 0 0.5rem;
-}
-</style>
+  },
+  
+    mounted() {
+      this.dataUser();
+    },
+  
+    methods: {
+      async dataUser() {
+        const id_student = this.$store.state.userId;
+        try {
+          const response = await axios.get(`/api/dataUser/${id_student}`);
+          this.user = response.data;
+        } catch (error) {
+          console.error(error);
+        }
+      },
+      tableRowClass(item) {
+      return {
+        'table-success': item.goal === 'PrepositionOfPlace' && item.lvl === 'low',
+        'table-info': item.goal === 'PrepositionOfPlace' && item.lvl === 'medium',
+        'table-warning': item.goal === 'PrepositionOfPlace' && item.lvl === 'high',
+        'table-danger': item.goal === 'PrepositionOfMovement' && item.lvl === 'low',
+        'table-primary': item.goal === 'PrepositionOfMovement' && item.lvl === 'medium',
+        'table-secondary': item.goal === 'PrepositionOfMovement' && item.lvl === 'high',
+        'table-dark': item.goal === 'PrepositionOfTime' && item.lvl === 'low',
+        'table-light': item.goal === 'PrepositionOfTime' && item.lvl === 'medium',
+        'table-secondary-time': item.goal === 'PrepositionOfTime' && item.lvl === 'high'
+      };
+    },
+    capturePath() {
+      const id_student = this.$store.state.userId
+      console.log('Learning Path activado');
+      axios.get(`/api/recommendPath/${id_student}`)
+      .then(response => {
+        this.recommendPath = response.data.recommend_path;
+        console.log(this.recommendPath)
+        
+      })
+      .catch(error => {
+        console.error('Error al obtener datos:', error);
+      });
+    },
+    captureStyle() {
+      console.log('Learning style activado');
+          const id_student = this.$store.state.userId
+          axios.get(`/api/style_list/${id_student}`)
+      .then(response => {
+        this.styleList = response.data.style_list;
+      })
+      .catch(error => {
+        console.error('Error al obtener datos:', error);
+      });
+        }
+    },
+  };
+  </script>
+  

@@ -1,16 +1,15 @@
 <template v-if="mostrarComponente">
   <div class="background">
     <div class="container">
-      <h1 v-if="showTitle" class="mb-4">Climate Change Quiz</h1>
+      <h1 v-if="showTitle && goalCompleted !== 1" class="mb-4">Prepositions Quiz</h1>
       <br>
-      <div v-if="!quizStarted">
-        <h4>Welcome! Get ready to answer some questions about climate change.</h4>
+      <div v-if="!quizStarted && goalCompleted !== 1">
+        <h4>Welcome! Get ready to answer some questions about Prepositions.</h4>
         <br>
-        <button @click="checkAuthStatus">Verificar Estado de Autenticación</button>
         <button class="btn btn-primary" @click="startQuiz">Start</button>
       </div>
       <div v-else>
-        <div v-if="currentQuestion !== null" class="quiz-question">
+        <div v-if="currentQuestion !== null && goalCompleted !== 1" class="quiz-question">
           <h2>Question {{ currentQuestion + 1 }}</h2>
           <p class="question" style="font-family: 'Roboto' sans-serif; font-size: 17pt;">{{ questions[currentQuestion].question }}</p>
           <br>
@@ -20,27 +19,51 @@
           
           <br>
           <br>
-          <v-btn class="btn-primary" color="#007bff" @click="nextQuestion" :disabled="selectedAnswer == ''">Next question <span class="mdi mdi-play"></span></v-btn>
+          <v-btn class="btn-secondary" color="#dc3545" @click="previousQuestion">Previous question <span class="mdi mdi-backward"></span></v-btn>
+          <v-btn class="btn-primary" color="#007bff" @click="nextQuestion" :disabled="!isAnswerSelected()">Next question <span class="mdi mdi-play"></span></v-btn>
           <router-link to="/">
             <button class="exit">Exit</button>
           </router-link>
         </div>
-        <div v-else-if="showMessage">
+        <div v-else-if="showMessage && goalCompleted !== 1">
           <h4>You have finished the quiz on the topic. now send your answers</h4>
           <br>
           <button class="btn btn-primary" @click="submitAnswers">Submit</button>
         </div>
         <div v-if="showSubmitMessage">
-      <div class="submit-message">
+      <div class="submit-message" v-if="goalCompleted !== 1">
           <h1 class="mb-4">Answers Submitted! <span class="mdi mdi-check-circle"></span></h1>
           <br>
+          <h3 class="mb-4">Need to improve with this recommended learning path</h3>
+    <b-table
+      :items="combinedData"
+      :fields="fields"
+      :tbody-tr-class="tableRowClass"
+      class="mt-3"
+    ></b-table>
+    <br>
         <h5>Your answers have been submitted. Thank you for completing the quiz!</h5>
         <br>
-        <h3>Let's determine your learning style, press continue</h3>
+        <h3>Now we start with the resources</h3>
         <br>
-        <router-link to="/DiagnosisStyles">
-          <button class="btn btn-primary">Continue</button>
+        <router-link to="/ActivityITS">
+          <button class="btn btn-primary">View resources</button>
         </router-link> 
+
+      </div>
+
+      <div class="submit-message" v-if="goalCompleted == 1">
+          <h1 class="mb-4">Answers Submitted! <span class="mdi mdi-check-circle"></span></h1>
+          <br>
+          <h3 class="mb-4">There is no learning path because no deficiencies were found in the topic.</h3>
+          <br>
+        <h5>But you can find resources to complement your learning, just press the continue button.</h5>
+        <br>
+          <a href="https://www.english-grammar.at/online_exercises/prepositions/preposition-index.htm" target="_blank"><button class="btn btn-primary">View resources</button>
+</a>
+<router-link to="/">
+            <button class="exit">Exit</button>
+          </router-link>
       </div>
     </div>
       </div>
@@ -137,276 +160,151 @@ export default {
       mostrarComponente: false,
       questions: [
         {
-          question: 'Which gas is known as the "silent killer" because of its role in trapping heat in the atmosphere?',
+          question: 'Where is the cat? It\'s __________ the table.',
           options: [
-              { text: 'Oxygen (O2)', value: 'a' },
-              { text: 'Nitrogen (N2)', value: 'b' },
-              { text: 'Carbon dioxide (CO2)', value: 'c' },
-              { text: 'Methane (CH4)', value: 'd' }
+              { text: 'on', value: 'a' },
+              { text: 'in', value: 'b' },
+              { text: 'under', value: 'c' },
           ]
         },
         {
-          question: 'What is deforestation?',
+          question: 'We have class __________ Monday.',
           options: [
-            { text: 'The process of planting trees', value: 'a' },
-            { text: 'The conversion of forests into urban areas', value: 'b' },
-            { text: 'The removal of trees and forests', value: 'c' },
-            { text: 'The practice of recycling paper', value: 'd' }
-          ]
-        },
-
-        {
-          question: 'What is a major source of greenhouse gas emissions from human activities?',
-          options: [
-            { text: 'Volcanic eruptions', value: 'a' },
-            { text: 'Burning fossil fuels', value: 'b' },
-            { text: 'Natural soil processes', value: 'c' },
-            { text: 'Deforestation', value: 'd' }
+            { text: 'in', value: 'a' },
+            { text: 'on', value: 'b' },
+            { text: 'at', value: 'c' },
           ]
         },
 
         {
-          question: 'What is a simple way to conserve energy in your home?',
+          question: 'She walked __________ the park.',
           options: [
-            { text: 'Leaving lights on when not needed', value: 'a' },
-            { text: 'Turning off electronics when not in use', value: 'b' },
-            { text: 'Opening windows during cold weather(CO2)', value: 'c' },
-            { text: 'Using a space heater in every room', value: 'd' }
+            { text: 'in', value: 'a' },
+            { text: 'to', value: 'b' },
+            { text: 'on', value: 'c' },
           ]
         },
 
         {
-  question: 'What does "energy efficiency" mean?',
-  options: [
-    { text: 'Using more energy than necessary', value: 'a' },
-    { text: 'Using energy without consideration for the environment', value: 'b' },
-    { text: 'Using less energy to accomplish the same tasks', value: 'c' },
-    { text: 'Using only renewable energy sources', value: 'd' }
-  ]
-},
-{
-  question: 'What is a benefit of using energy-efficient appliances?',
-  options: [
-    { text: 'Higher energy consumption', value: 'a' },
-    { text: 'Lower electricity bills', value: 'b' },
-    { text: 'Increased greenhouse gas emissions', value: 'c' },
-    { text: 'Greater dependence on fossil fuels', value: 'd' }
-  ]
-},
-{
-  question: 'What is a common source of marine plastic pollution?',
-  options: [
-    { text: 'Volcanic eruptions', value: 'a' },
-    { text: 'Medical waste', value: 'b' },
-    { text: 'Sewage', value: 'c' },
-    { text: 'Radioactive waste', value: 'd' }
-  ]
-},
-{
-  question: 'What is one way to reduce plastic waste in your daily life?',
-  options: [
-    { text: 'Using disposable plastic bags', value: 'a' },
-    { text: 'Buying bottled water', value: 'b' },
-    { text: 'Using a reusable water bottle', value: 'c' },
-    { text: 'Throwing plastic waste in the ocean', value: 'd' }
-  ]
-},
-{
-  question: 'What are microplastics?',
-  options: [
-    { text: 'Large pieces of plastic waste found in oceans', value: 'a' },
-    { text: 'Plastic waste that cannot be recycled', value: 'b' },
-    { text: 'Tiny plastic particles that pollute the environment', value: 'c' },
-    { text: 'Biodegradable plastics', value: 'd' }
-  ]
-},
-{
-  question: 'What is the primary greenhouse gas responsible for trapping heat in the Earth\'s atmosphere?',
-  options: [
-    { text: 'Carbon dioxide (CO2)', value: 'a' },
-    { text: 'Methane (CH4)', value: 'b' },
-    { text: 'Nitrous oxide (N2O)', value: 'c' },
-    { text: 'Water vapor (H2O)', value: 'd' }
-  ]
-},
-{
-  question: 'Deforestation refers to the process of:',
-  options: [
-    { text: 'Increasing forest coverage', value: 'a' },
-    { text: 'Planting more trees', value: 'b' },
-    { text: 'Clearing or removing trees from an area', value: 'c' },
-    { text: 'Building structures within forests', value: 'd' }
-  ]
-},
-{
-  question: 'Which of the following human activities contributes significantly to greenhouse gas emissions?',
-  options: [
-    { text: 'Walking and biking', value: 'a' },
-    { text: 'Using energy-efficient appliances', value: 'b' },
-    { text: 'Burning fossil fuels for transportation', value: 'c' },
-    { text: 'Recycling paper and plastic', value: 'd' }
-  ]
-},
-{
-  question: 'Which of the following is an effective way to conserve energy at home?',
-  options: [
-    { text: 'Leaving lights and electronics on when not in use', value: 'a' },
-    { text: 'Setting the thermostat to a very high temperature', value: 'b' },
-    { text: 'Using energy-efficient appliances and light bulbs', value: 'c' },
-    { text: 'Opening windows and doors during cold weather', value: 'd' }
-  ]
-},
-{
-  question: 'What is the purpose of an energy audit?',
-  options: [
-    { text: 'To increase energy consumption', value: 'a' },
-    { text: 'To identify ways to reduce energy usage', value: 'b' },
-    { text: 'To promote the use of fossil fuels', value: 'c' },
-    { text: 'To encourage deforestation', value: 'd' }
-  ]
-},
-{
-  question: 'Which of the following is a renewable source of energy?',
-  options: [
-    { text: 'Natural gas', value: 'a' },
-    { text: 'Coal', value: 'b' },
-    { text: 'Wind power', value: 'c' },
-    { text: 'Nuclear power', value: 'd' }
-  ]
-},
+          question: 'She left her keys __________ the car.',
+          options: [
+            { text: 'in', value: 'a' },
+            { text: 'on', value: 'b' },
+            { text: 'under', value: 'c' },
+          ]
+        },
 
-{
-  question: 'Which of the following is a common single-use plastic item that contributes to pollution?',
+        {
+  question: "The party is going to start __________ 7 o'clock.",
   options: [
-    { text: 'Reusable water bottle', value: 'a' },
-    { text: 'Paper bag', value: 'b' },
-    { text: 'Plastic straw', value: 'c' },
-    { text: 'Glass container', value: 'd' }
+    { text: 'at', value: 'a' },
+    { text: 'on', value: 'b' },
+    { text: 'in', value: 'c' },
   ]
 },
 {
-  question: 'Which of the following actions can help reduce plastic waste?',
+  question: 'He swam __________ the river.',
   options: [
-    { text: 'Using single-use plastic items', value: 'a' },
-    { text: 'Recycling plastic waste', value: 'b' },
-    { text: 'Throwing plastic waste in rivers', value: 'c' },
-    { text: 'Ignoring plastic waste', value: 'd' }
+    { text: 'across', value: 'a' },
+    { text: 'through', value: 'b' },
+    { text: 'by', value: 'c' },
   ]
 },
 {
-  question: 'What are microplastics?',
+  question: 'The book is __________ the shelf next to the window.',
   options: [
-    { text: 'Large pieces of plastic waste found in oceans', value: 'a' },
-    { text: 'Plastic waste that cannot be recycled', value: 'b' },
-    { text: 'Tiny plastic particles that pollute the environment', value: 'c' },
-    { text: 'Biodegradable plastics', value: 'd' }
+    { text: 'on', value: 'a' },
+    { text: 'in', value: 'b' },
+    { text: 'beside', value: 'c' },
   ]
 },
 {
-  question: 'Which of the following is a major greenhouse gas responsible for global warming?',
+  question: 'He arrived __________ the morning.',
   options: [
-    { text: 'Carbon dioxide (CO2)', value: 'a' },
-    { text: 'Nitrogen (N2)', value: 'b' },
-    { text: 'Oxygen (O2)', value: 'c' },
-    { text: 'Water vapor (H2O)', value: 'd' }
+    { text: 'at', value: 'a' },
+    { text: 'in', value: 'b' },
+    { text: 'on', value: 'c' },
   ]
 },
 {
-  question: 'Which human activity is a major cause of deforestation?',
+  question: 'The bird flew __________ the tree.',
   options: [
-    { text: 'Mining', value: 'a' },
-    { text: 'Fishing', value: 'b' },
-    { text: 'Agriculture', value: 'c' },
-    { text: 'Air travel', value: 'd' }
+    { text: 'over', value: 'a' },
+    { text: 'through', value: 'b' },
+    { text: 'into', value: 'c' },
   ]
 },
-{
-  question: 'Which industry is a significant contributor to greenhouse gas emissions?',
-  options: [
-    { text: 'Fashion industry', value: 'a' },
-    { text: 'Renewable energy industry', value: 'b' },
-    { text: 'Entertainment industry', value: 'c' },
-    { text: 'Education industry', value: 'd' }
-  ]
-},
-{
-  question: 'Which of the following is an example of energy-efficient lighting?',
-  options: [
-    { text: 'Incandescent light bulb', value: 'a' },
-    { text: 'Compact fluorescent lamp (CFL)', value: 'b' },
-    { text: 'Halogen lamp', value: 'c' },
-    { text: 'Neon light', value: 'd' }
-  ]
-},
-
-{
-  question: 'What can you do to reduce energy consumption in your home?',
-  options: [
-    { text: 'Keep lights and appliances on when not in use', value: 'a' },
-    { text: 'Set the thermostat to a high temperature in winter', value: 'b' },
-    { text: 'Use energy-efficient appliances', value: 'c' },
-    { text: 'Keep windows and doors open during hot days', value: 'd' }
-  ]
-},
-{
-  question: 'Which of the following is a renewable source of energy?',
-  options: [
-    { text: 'Natural gas', value: 'a' },
-    { text: 'Coal', value: 'b' },
-    { text: 'Petroleum', value: 'c' },
-    { text: 'Solar power', value: 'd' }
-  ]
-},
-{
-  question: 'Which of the following actions can help reduce plastic waste?',
-  options: [
-    { text: 'Using single-use plastic items', value: 'a' },
-    { text: 'Recycling plastic waste', value: 'b' },
-    { text: 'Throwing plastic waste in rivers', value: 'c' },
-    { text: 'Ignoring plastic waste', value: 'd' }
-  ]
-},
-{
-  question: 'Which of the following is a commonly used plastic that contributes to pollution?',
-  options: [
-      { text: 'Polyethylene (PE)', value: 'a' },
-      { text: 'Gold', value: 'b' },
-      { text: 'Wood', value: 'c' },
-      { text: 'Glass', value: 'd' }
-      ]
-  },
-  {
-  question: 'Which of the following is a primary source of marine plastic pollution?',
-  options: [
-      { text: 'Volcanic eruptions', value: 'a' },
-      { text: 'Medical waste', value: 'b' },
-      { text: 'Sewage', value: 'c' },
-      { text: 'Radioactive waste', value: 'd' }
-      ]
-  }
       ],
       currentQuestion: 0,
       selectedAnswer: null,
-      answers: []
+      answers: [], 
+      recommendPath: [],
+      incorrectAnswer: [],
+      goalCompleted: null
     };
   },
   computed: {
-...mapState(['auth'])
+...mapState(['auth']),
+combinedData() {
+      const combined = [...this.recommendPath];
+      return combined.map(item => {
+        return {
+          name: item.name || item,
+          goal: item.goal || '',
+          lvl: item.lvl || ''
+        };
+      });
+},
+
+
+fields() {
+      return [
+        { key: 'name', label: 'Name' },
+        { key: 'goal', label: 'Goal' },
+        { key: 'lvl', label: 'Level' }
+      ];
+    }
+  },
+  mounted() {
+  this.StateVerified()
 },
   methods: {
+    tableRowClass(item) {
+      return {
+        'table-success': item.goal === 'PrepositionOfPlace' && item.lvl === 'low',
+        'table-info': item.goal === 'PrepositionOfPlace' && item.lvl === 'medium',
+        'table-warning': item.goal === 'PrepositionOfPlace' && item.lvl === 'high',
+        'table-danger': item.goal === 'PrepositionOfMovement' && item.lvl === 'low',
+        'table-primary': item.goal === 'PrepositionOfMovement' && item.lvl === 'medium',
+        'table-secondary': item.goal === 'PrepositionOfMovement' && item.lvl === 'high',
+        'table-dark': item.goal === 'PrepositionOfTime' && item.lvl === 'low',
+        'table-light': item.goal === 'PrepositionOfTime' && item.lvl === 'medium',
+        'table-secondary-time': item.goal === 'PrepositionOfTime' && item.lvl === 'high'
+      };
+    },
+
+    capturePath() {
+      const id_student = this.$store.state.userId
+      axios.get(`/api/recommendPath/${id_student}`)
+      .then(response => {
+        this.recommendPath = response.data.recommend_path;
+        console.log(this.recommendPath)
+      })
+      .catch(error => {
+        console.error('Error al obtener datos:', error);
+      });
+    },
+
     StateVerified(){
           const id_student = this.$store.state.userId
           axios
           .get(`/api/stateVerified/${id_student}`)
           .then(response => {
-              const resultado = response.data
-              console.log(resultado)
-              if (resultado.TestTopic === 1) {
-                this.$router.push('/DiagnosisStyle')
-              } else {
-                this.mostrarComponente = true
+              this.goalCompleted = response.data.GoalCompleted
+              if (response.data.GoalCompleted == 1) {
+                this.showSubmitMessage = true;
               }
-
+              console.log(this.goalCompleted)
           })
           .catch(error => {
               console.log(error, 'error al cargar estado')
@@ -416,14 +314,30 @@ export default {
     this.quizStarted = true;
     this.currentQuestion = 0;
     },
-      nextQuestion() {
-      this.answers.push(this.selectedAnswer);
-      if (this.currentQuestion < this.questions.length - 1) {
-        this.currentQuestion++;
-        this.selectedAnswer = null;
+    nextQuestion() {
+      // Verificar si se ha seleccionado una respuesta antes de avanzar
+      if (this.isAnswerSelected()) {
+        this.answers.push(this.selectedAnswer);
+        if (this.currentQuestion < this.questions.length - 1) {
+          this.currentQuestion++;
+          this.selectedAnswer = '';
+        } else {
+          this.currentQuestion = null;
+        }
       } else {
-        this.currentQuestion = null;
+        alert("Por favor, selecciona una respuesta antes de continuar.");
       }
+    },
+    previousQuestion() {
+      // Retroceder a la pregunta anterior
+      if (this.currentQuestion > 0) {
+        this.currentQuestion--;
+        this.selectedAnswer = [];
+      }
+    },
+
+    isAnswerSelected() {
+      return this.selectedAnswer && this.selectedAnswer.length > 0;
     },
 
         submitAnswers() {
@@ -432,9 +346,11 @@ export default {
           axios.post(`/api/diagnosis/${id_student}`, { answers : this.answers})
           .then(response => {
               console.log(response.data);
+              this.StateVerified()
               this.showSubmitMessage = true;
               this.showMessage = false
               this.showTitle = false;
+              this.capturePath()
           })
           .catch(error => {
               console.log(error, 'Error al enviar')

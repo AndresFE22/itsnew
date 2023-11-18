@@ -14,11 +14,12 @@
             <p class="question" style="font-family: 'Roboto' sans-serif; font-size: 17pt;">{{ questions[currentQuestion].question }}</p>
             <br>
             <select v-model="selectedAnswer" :name="'student_answer' + (currentQuestion + 1)" class="form-select mb-3" style="cursor: pointer;">
-                <option v-for="(option, optionIndex) in questions[currentQuestion].options" :key="optionIndex" :value="option.value" :selected="optionIndex === 0">{{ option.text }}</option>
+                <option v-for="(option, optionIndex) in questions[currentQuestion].options" :key="optionIndex" :value="option.value" :selected="option.text">{{ option.text }}</option>
             </select>
             <br>
             <br>
-            <v-btn class="btn-primary" color="#007bff" @click="nextQuestion" :disabled="selectedAnswer === ''">Next question <span class="mdi mdi-play"></span></v-btn>
+            <v-btn class="btn-secondary" color="#dc3545" @click="previousQuestion">Previous question <span class="mdi mdi-backward"></span></v-btn>
+            <v-btn class="btn-primary" color="#007bff" @click="nextQuestion" :disabled="!isAnswerSelected()">Next question <span class="mdi mdi-play"></span></v-btn>
             <router-link to="/">
               <button class="exit">Exit</button>
             </router-link>
@@ -32,12 +33,20 @@
           <div v-if="ShowText_l">
             <h1 class="mb-4">Answers Submitted! <span class="mdi mdi-check-circle"></span></h1>
             <br>
+            <h3 class="mb-4">Great! Your learning style is the following</h3>
+            <br>
+            <b-table
+              :items="styleList"
+              :fields="fields"
+              class="mt-3"
+    ></b-table>
+    <br>
           <h5>Your answers have been submitted. Thank you for completing the quiz!</h5>
           <br>
-          <h3>Now we start with the activities</h3>
+          <h3>Let's determine your prior knowledge, press continue</h3>
           <br>
-            <router-link to="/ActivityITS">
-              <button class="btn btn-primary">Submit Answers</button>
+            <router-link to="/DiagnosisState">
+              <button class="btn btn-primary">Continue</button>
             </router-link>
           </div>
         </div>
@@ -133,174 +142,181 @@ axios.defaults.headers.common['Access-Control-Allow-Origin'] = '*';
         mostrarComponente: false,
         questions: [
           {
-            question: 'Entiendo mejor algo:',
+            question: 'I understand better:',
             options: [
-                { text: 'si lo practico.', value: 'a' },
-                { text: 'si pienso en ello.', value: 'b' },
+                { text: 'if I practice it.', value: 'a' },
+                { text: 'if I think about it.', value: 'b' },
             
             ]
           },
           {
-            question: ' Me considero:',
+            question: 'I consider myself:',
             options: [
-              { text: 'Realista.', value: 'a' },
-              { text: 'innovador.', value: 'b' },
+              { text: 'Realistic.', value: 'a' },
+              { text: 'Innovative.', value: 'b' },
              
             ]
           },
 
           {
-            question: 'Cuando pienso acerca de lo que hice ayer, es más probable que lo haga sobre la base de:',
+            question: 'When I think about what I did yesterday, I am more likely to do it based on:',
             options: [
-              { text: 'una imagen.', value: 'a' },
-              { text: 'palabras', value: 'b' },
+              { text: 'an image.', value: 'a' },
+              { text: 'words.', value: 'b' },
           
             ]
           },
 
           {
-            question: 'Tengo tendencia a:',
+            question: 'I tend to:',
             options: [
-              { text: 'entender los detalles de un tema pero no ver claramente su estructura completa.', value: 'a' },
-              { text: 'entender la estructura completa pero no ver claramente los detalles.', value: 'b' },
+              { text: 'understand the details of a subject but not clearly see its complete structure.', value: 'a' },
+              { text: 'understand the complete structure but not clearly see the details.', value: 'b' },
              
             ]
           },
 
           {
-    question: 'Cuando estoy aprendiendo algo nuevo, me ayuda:',
+    question: 'When I\'m learning something new, it helps me:',
     options: [
-      { text: 'hablar de ello.', value: 'a' },
-      { text: 'pensar en ello.', value: 'b' },
+      { text: 'talk about it.', value: 'a' },
+      { text: 'think about it.', value: 'b' },
     
     ]
   },
   {
-    question: 'Si yo fuera profesor, yo preferiría dar un curso:',
+    question: 'If I were a teacher, I would prefer to teach a course:',
     options: [
-      { text: 'que trate sobre hechos y situaciones reales de la vida.', value: 'a' },
-      { text: 'que trate con ideas y teorías.', value: 'b' },
+      { text: 'that deals with facts and real-life situations.', value: 'a' },
+      { text: 'that deals with ideas and theories.', value: 'b' },
     
     ]
   },
   {
-    question: 'Prefiero obtener información nueva de:',
+    question: 'I prefer to get new information from:',
     options: [
-      { text: 'imágenes, diagramas, gráficas o mapas.', value: 'a' },
-      { text: 'instrucciones escritas o información verbal.', value: 'b' },
+      { text: 'images, diagrams, charts, or maps.', value: 'a' },
+      { text: 'written instructions or verbal information.', value: 'b' },
     
     ]
   },
   {
-    question: 'Una vez que entiendo:',
+    question: 'Once I understand:',
     options: [
-      { text: 'todas las partes, entiendo el total.', value: 'a' },
-      { text: 'el total de algo, entiendo como encajan sus partes.', value: 'b' },
+      { text: 'all the parts, I understand the whole.', value: 'a' },
+      { text: 'the whole of something, I understand how its parts fit together.', value: 'b' },
   
     ]
   },
   {
-    question: 'En un grupo de estudio que trabaja con un material difícil, es más probable que:',
+    question: 'In a study group working with difficult material, I am more likely to:',
     options: [
-      { text: 'participe y contribuya con ideas.', value: 'a' },
-      { text: 'no participe y solo escuche.', value: 'b' },
+      { text: 'participate and contribute ideas.', value: 'a' },
+      { text: 'not participate and just listen.', value: 'b' },
      
     ]
   },
   {
-    question: 'Es más fácil para mí:',
+    question: 'It is easier for me to:',
     options: [
-      { text: 'aprender hechos.', value: 'a' },
-      { text: 'aprender conceptos.', value: 'b' },
+      { text: 'learn facts.', value: 'a' },
+      { text: 'learn concepts.', value: 'b' },
      
     ]
   },
   {
-    question: 'En un libro con muchas imágenes y gráficas es más probable que:',
+    question: 'In a book with many images and charts, I am more likely to:',
     options: [
-      { text: 'revise cuidadosamente las imágenes y las gráficas.', value: 'a' },
-      { text: 'me concentre en el texto escrito.', value: 'b' },
+      { text: 'carefully review the images and charts.', value: 'a' },
+      { text: 'focus on the written text.', value: 'b' },
     
     ]
   },
   {
-    question: 'Cuando resuelvo problemas de matemáticas:',
+    question: 'When solving math problems:',
     options: [
-      { text: 'generalmente trabajo sobre las soluciones con un paso a la vez.', value: 'a' },
-      { text: 'frecuentemente sé cuales son las soluciones, pero luego tengo dificultad para imaginarme los pasos para llegar a ellas.', value: 'b' },
+      { text: 'I generally work through solutions step by step.', value: 'a' },
+      { text: 'I often know what the solutions are but then have difficulty envisioning the steps to reach them.', value: 'b' },
      
     ]
   },
   {
-    question: 'En las clases a las que he asistido:',
+    question: 'In the classes I have attended:',
     options: [
-      { text: 'he llegado a saber como son muchos de los estudiantes.', value: 'a' },
-      { text: 'raramente he llegado a saber como son muchos estudiantes.', value: 'b' },
+      { text: 'I have come to know how many of the students are.', value: 'a' },
+      { text: 'I have rarely come to know how many students are.', value: 'b' },
       
     ]
   },
   {
-    question: 'Cuando leo temas que no son de ficción, prefiero:',
+    question: 'When reading non-fiction topics, I prefer:',
     options: [
-      { text: 'algo que me enseñe nuevos hechos o me diga como hacer algo.', value: 'a' },
-      { text: 'algo que me dé nuevas ideas en que pensar.', value: 'b' },
+      { text: 'something that teaches me new facts or tells me how to do something.', value: 'a' },
+      { text: 'something that gives me new ideas to think about.', value: 'b' },
      
     ]
   },
   {
-    question: 'Me gustan los maestros:',
+    question: 'I like teachers who:',
     options: [
-      { text: 'que utilizan muchos esquemas en el pizarrón.', value: 'a' },
-      { text: 'que toman mucho tiempo para explicar', value: 'b' },
+      { text: 'use many diagrams on the board.', value: 'a' },
+      { text: 'take a lot of time to explain.', value: 'b' },
  
     ]
   },
 
   {
-    question: 'Cuando estoy analizando un cuento o una novela:',
+    question: 'When analyzing a story or novel:',
     options: [
-      { text: 'pienso en los incidentes y trato de acomodarlos para configurar los temas.', value: 'a' },
-      { text: 'me doy cuenta de cuales son los temas cuando termino de leer y luego tengo que regresar y encontrar los incidentes que los demuestran.', value: 'b' },
+      { text: 'I think about the incidents and try to arrange them to shape the themes.', value: 'a' },
+      { text: 'I realize what the themes are when I finish reading and then have to go back and find the incidents that demonstrate them.', value: 'b' },
 
     ]
   },
   {
-    question: 'Cuando comienzo a resolver un problema de tarea, es más probable que:',
+    question: 'When I start solving a homework problem, I am more likely to:',
     options: [
-      { text: 'comience a trabajar en su solución inmediatamente.', value: 'a' },
-      { text: 'primero trate de entender completamente el problema.', value: 'b' },
+      { text: 'start working on its solution immediately.', value: 'a' },
+      { text: 'first try to fully understand the problem.', value: 'b' },
     
     ]
   },
   {
-    question: 'Prefiero la idea de:',
+    question: 'I prefer the idea of:',
     options: [
-      { text: 'certeza', value: 'a' },
-      { text: 'teoría', value: 'b' },
+      { text: 'certainty', value: 'a' },
+      { text: 'theory', value: 'b' },
     ]
   },
   {
-    question: 'Recuerdo mejor:',
+    question: 'I remember better:',
     options: [
-      { text: 'lo que veo.', value: 'a' },
-      { text: 'lo que oigo.', value: 'b' },
+      { text: 'what I see.', value: 'a' },
+      { text: 'what I hear.', value: 'b' },
     ]
   },
   {
-    question: 'Es más importante para mí que un profesor:',
+    question: 'It\'s more important to me that a teacher:',
     options: [
-      { text: 'Exponga el material en pasos secuenciales claros.', value: 'a' },
-      { text: 'me dé un panorama general y relacione el material con otros temas.', value: 'b' },
-    ]
-  },
+      { text: 'present the material in clear sequential steps.', value: 'a' },
+      { text: 'give me an overview and relate the material to other topics.', value: 'b' },
+  ]
+},
         ],
         currentQuestion: 0,
         selectedAnswer: null,
-        answers: []
+        answers: [],
+        styleList: []
       };
     },
     computed: {
   // ...mapState(['auth'])
+    fields() {
+      return [
+        { key: 'dominant_style', label: 'Dominant style' },
+        { key: 'style', label: 'Style' },
+      ];
+    }
 },
   
 
@@ -329,15 +345,31 @@ axios.defaults.headers.common['Access-Control-Allow-Origin'] = '*';
       this.quizStarted = true;
       this.currentQuestion = 0;
       },
-        nextQuestion() {
+      nextQuestion() {
+      // Verificar si se ha seleccionado una respuesta antes de avanzar
+      if (this.isAnswerSelected()) {
         this.answers.push(this.selectedAnswer);
         if (this.currentQuestion < this.questions.length - 1) {
           this.currentQuestion++;
-          this.selectedAnswer = null;
+          this.selectedAnswer = '';
         } else {
           this.currentQuestion = null;
         }
-      },
+      } else {
+        alert("Por favor, selecciona una respuesta antes de continuar.");
+      }
+    },
+    previousQuestion() {
+      // Retroceder a la pregunta anterior
+      if (this.currentQuestion > 0) {
+        this.currentQuestion--;
+        this.selectedAnswer = [];
+      }
+    },
+    
+    isAnswerSelected() {
+      return this.selectedAnswer && this.selectedAnswer.length > 0;
+    },
         submitAnswers() {
           const id_student = this.$store.state.userId
             axios.post(`/api/test/${id_student}`, { answers : this.answers})
@@ -345,10 +377,21 @@ axios.defaults.headers.common['Access-Control-Allow-Origin'] = '*';
                 console.log(response.data);
                 this.showText = false;
                 this.ShowText_l = true;
+                this.captureStyle()
             })
             .catch(error => {
                 console.log(error, 'Error al enviar')
             }) 
+        },
+        captureStyle() {
+          const id_student = this.$store.state.userId
+          axios.get(`/api/style_list/${id_student}`)
+      .then(response => {
+        this.styleList = response.data.style_list;
+      })
+      .catch(error => {
+        console.error('Error al obtener datos:', error);
+      });
         }
 
     }
