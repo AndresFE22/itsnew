@@ -18,7 +18,6 @@
             </select>
             <br>
             <br>
-            <v-btn class="btn-secondary" color="#dc3545" @click="previousQuestion">Previous question <span class="mdi mdi-backward"></span></v-btn>
             <v-btn class="btn-primary" color="#007bff" @click="nextQuestion" :disabled="!isAnswerSelected()">Next question <span class="mdi mdi-play"></span></v-btn>
             <router-link to="/">
               <button class="exit">Exit</button>

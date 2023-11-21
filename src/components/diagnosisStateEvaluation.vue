@@ -18,7 +18,7 @@
         </select>
   <br>
   <br>
-  <v-btn class="btn-primary" color="#007bff" @click="nextQuestion" :disabled="selectedAnswer == ''">Next question <span class="mdi mdi-play"></span></v-btn>
+  <v-btn class="btn-primary" color="#007bff" @click="nextQuestion" :disabled="!isAnswerSelected()">Next question <span class="mdi mdi-play"></span></v-btn>
   <router-link to="/">
     <button class="exit">Exit</button>
   </router-link>
@@ -258,7 +258,8 @@ export default {
             })},
           
             nextQuestion() {
-      this.answers.push(this.selectedAnswer);
+              if (this.isAnswerSelected()) {
+                this.answers.push(this.selectedAnswer);
       const nextIndex = this.visibleQuestionsIndex + 1;
       if (nextIndex < this.hiddenQuestions.length) {
         this.visibleQuestionsIndex = nextIndex;
@@ -267,6 +268,9 @@ export default {
       } else {
         this.visibleQuestionsIndex = null;
       }
+              } else {
+            alert("Por favor, selecciona una respuesta antes de continuar.");
+              }
     },
          submitAnswers() {
           const id_student = this.$store.state.userId
@@ -280,7 +284,11 @@ export default {
           .catch(error => {
               console.log(error, 'Error al enviar')
           }) 
-      }
+      },
+      isAnswerSelected() {
+      return this.selectedAnswer && this.selectedAnswer.length > 0;
+    },
+
 
   }
 };

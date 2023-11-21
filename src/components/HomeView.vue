@@ -246,7 +246,7 @@ change() {
       formData.append('password', this.passwordRegistered) 
       formData.append('picture', this.picture) 
 
-      axios.post('api/register', formData)
+      axios.post('/api/register', formData)
       .then(response => {
         this.message = response.data.message;
         setTimeout(() => {

@@ -23,15 +23,15 @@
             <b-tab title="Info" active>
               <b-list-group>
                 <b-list-group-item>
-                  <span class="p-1 mr-3"> <b-avatar icon="Id user" /></span>
+                  <span class="mdi mdi-account-box"> <b-avatar icon="Id user" /><strong>Id user</strong></span>
                   {{ user.Id }}
                 </b-list-group-item>
                 <b-list-group-item>
-                  <span class="p-1 mr-3"> <b-avatar icon="Name" /></span>
+                  <span class="mdi mdi-account"> <b-avatar icon="Name" /><strong>Name</strong></span>
                   {{ user.name }}
                 </b-list-group-item>
                 <b-list-group-item>
-                  <span class="p-1 mr-3"> <b-avatar icon="Username" /></span>
+                  <span class="mdi mdi-account-edit"> <b-avatar icon="Username" /><strong>Username</strong></span>
                   {{ user.users }}
                 </b-list-group-item>
               </b-list-group>

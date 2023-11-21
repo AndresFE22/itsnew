@@ -7,7 +7,7 @@
           <img src="../assets/pngwing.com.png" alt="">
           <v-card-text>
             <h1 class="display-1 line-spacing">
-              Welcome to the Intelligent Tutor System!
+              Welcome to the Intelligent Tutor System! <br> LANGUAGE TUTOR (STILT)
             </h1>
           </v-card-text>
           <v-card-text>
