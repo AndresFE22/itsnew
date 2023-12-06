@@ -2,8 +2,9 @@ import Vue from 'vue';
 import VueRouter from 'vue-router';
 
 // import verified from "../VerifiedH5p.vue";
-import Home from "../components/Home.vue";
+import Home from "../components/HomePrincipal.vue";
 // import dia from "../components/loginU.vue";
+import ordenar from "../components/ParaOrdenar.vue";
 import auth from "../components/HomeView.vue";
 import profile from "../components/ProfileUser.vue";
 import DiagnosisState from "../components/diagnosisState.vue";
@@ -23,6 +24,12 @@ const routes = [
     name: "Home",
     component: Home,
   },
+  {
+    path: "/ordenar",
+    name: "ordenar",
+    component: ordenar,
+  },
+  
   {
     path: "/auth",
     name: "auth",

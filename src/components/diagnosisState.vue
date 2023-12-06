@@ -1,7 +1,11 @@
 <template v-if="mostrarComponente">
   <div class="background">
     <div class="container">
-      <h1 v-if="showTitle && goalCompleted !== 1" class="mb-4">Prepositions Quiz</h1>
+      <div class="logos" >
+        <h1 v-if="showTitle && goalCompleted !== 1" class="mb-4">Prepositions Quiz</h1>
+          <v-spacer></v-spacer>
+          <img src="../assets/edutlan.jpg" alt=""  style="width: 145px;"> 
+        </div>
       <br>
       <div v-if="!quizStarted && goalCompleted !== 1">
         <h4>Welcome! Get ready to answer some questions about Prepositions.</h4>
@@ -79,6 +83,12 @@ min-height: 100vh;
 display: flex;
 justify-content: center;
 align-items: center;
+}
+
+
+.logos {
+  display: flex;
+
 }
 
 h1 {

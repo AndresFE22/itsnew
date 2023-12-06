@@ -31,14 +31,13 @@
           <!-- Espacios para Logos -->
           <v-row>
             <v-col class="text-center mb-4">
-              <img src="../assets/UNICOR.png" alt="Logo" height="140px" />
+              <img src="../assets/banner.png" alt="Logo" height="140px" />
+
             </v-col>
             <v-col class="text-center mb-4">
-              <img src="../assets/edutlan.jpg" alt="Logo" height="80px" />
+              <img src="../assets/edutlan.jpg" alt="Logo" height="140px" />
             </v-col>
-            <v-col class="text-center mb-4">
-              <img src="../assets/liemav.png" alt="Logo" height="80px" />
-            </v-col>
+
           </v-row>
         </v-col>
       </v-row>

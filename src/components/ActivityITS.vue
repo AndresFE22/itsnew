@@ -36,6 +36,8 @@
           <a class="nav-link" :class="{ 'active': activeTab === 'AcercaTab' }" @click="changeTab('AcercaTab')">Acerca de</a>
         </li>
         <v-spacer></v-spacer>
+        <img src="../assets/edutlan.jpg" alt=""  style="width: 145px;"> 
+        <v-spacer></v-spacer>
         <li class="nav-item">
           <a class="nav-link" @click="abrirModal()" ><span class="mdi mdi-exit-to-app"></span></a>
         </li>

@@ -1,7 +1,11 @@
 <template v-for="mostrarComponente">
     <div class="background">
       <div class="container">
-        <h1 class="mb-4">Test Learning Styles</h1>
+        <div class="logos" >
+          <h1 class="mb-4">Test Learning Styles</h1>
+          <v-spacer></v-spacer>
+          <img src="../assets/edutlan.jpg" alt=""  style="width: 145px;"> 
+        </div>
         <br>
         <div v-if="!quizStarted">
           <h4>Ready! Now let's determine what your learning style is</h4>
@@ -68,6 +72,11 @@ h1 {
   color: #007bff;
   font-weight: bold;
   font-family: 'Roboto' sans-serif;
+}
+
+.logos {
+  display: flex;
+
 }
 
 .question {
